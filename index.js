@@ -17,7 +17,7 @@ const session = require('express-session');
 const mysql = require('mysql');
 
 // Bcrypt library for comparing password hashes
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 // Include the xml2js parser and file reading capabilities
 const fs = require('fs');
@@ -26,7 +26,7 @@ const xmlparser = new xml2js.Parser();
 
 // Include the express router.
 const utilities = require('./api/utilities');
-// sID = 5456002 so port is 9 + last 3 digits of sID = 9002
+
 const port = 9002;
 
 // create an express application
