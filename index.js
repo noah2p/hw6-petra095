@@ -50,27 +50,11 @@ fs.readFile(__dirname + '/dbconfig.xml', function (err, data) {
 /**
 // attempt to create a connection using the newly created JSON
 var connection = mysql.createConnection({
-  host: dbConfig.host,  // "cse-mysql-classes-01.cse.umn.edu",
-  user: dbConfig.user,  // "C4131S21U69",
-  password: dbConfig.password,  // "4791",
-  database: dbConfig.database,  // "C4131S21U69",
-  port: dbConfig.port  // 3306
-});
-
-const connection2 = mysql.createConnection({
-  host: "cse-mysql-classes-01.cse.umn.edu",
-  user: "C4131S21U69",
-  password: "4791",
-  database: "C4131S21U69",
-  port: 3306
-});
-
-// when do i connect?
-connection.connect(function(err) {
-  if (err) {
-    throw err;
-  }
-  console.log("connected to SQL database");
+  host: dbConfig.host,
+  user: dbConfig.user,
+  password: dbConfig.password,
+  database: dbConfig.database,
+  port: dbConfig.port
 });
 */
 
@@ -180,20 +164,17 @@ app.get('/logout', function(req, res) {
 
 // GET method route for dynamically populate contacts.html
 app.get('/getContact', function (req,res) {
-  // console.log("made it to getContact request");
-  // console.log("attempting to get all contacts from tbl_contacts");
   var connection = mysql.createConnection({
-    host: dbConfig.dbconfig.host[0],  // "cse-mysql-classes-01.cse.umn.edu",
-    user: dbConfig.dbconfig.user[0],  // "C4131S21U69",
-    password: dbConfig.dbconfig.password[0],  // "4791",
-    database: dbConfig.dbconfig.database[0],  // "C4131S21U69",
-    port: dbConfig.dbconfig.port[0]  // 3306
+    host: dbConfig.dbconfig.host[0],
+    user: dbConfig.dbconfig.user[0], 
+    password: dbConfig.dbconfig.password[0], 
+    database: dbConfig.dbconfig.database[0],
+    port: dbConfig.dbconfig.port[0]
   });
   connection.connect(function(err) {
     if (err) {
       throw err;
     }
-    // console.log("connected to SQL database");
   });
   connection.query("SELECT * FROM tbl_contacts", function(err, result, fields) {
     if (err) {
@@ -203,7 +184,6 @@ app.get('/getContact', function (req,res) {
     // each index in the array is a row
     // need to return the entries as a json so that contacts.html can parse it
     var results = JSON.parse(JSON.stringify(result));
-    // console.log("results: ", results);
     res.json(results);
   });
   connection.end();
@@ -211,47 +191,31 @@ app.get('/getContact', function (req,res) {
 
 // POST login request from login form
 app.post('/authenticate', urlencodedparser, function(req, res) {
-  // console.log("made it to authenticate post request");
-
-  // submitted in XURL encoded format
-  // use bodyparser
   var user = req.body.username;
   var pass = req.body.password;
-  // console.log("User is: ", user);
-  // console.log("Pass is: ", pass);
-  // ensure both username and password exist.
-  // probably unnecessary as this should be handled by the required attribute on the form.
+
   if (user && pass) {
     var connection = mysql.createConnection({
-      host: dbConfig.dbconfig.host[0],  // "cse-mysql-classes-01.cse.umn.edu",
-      user: dbConfig.dbconfig.user[0],  // "C4131S21U69",
-      password: dbConfig.dbconfig.password[0],  // "4791",
-      database: dbConfig.dbconfig.database[0],  // "C4131S21U69",
-      port: dbConfig.dbconfig.port[0]  // 3306
+      host: dbConfig.dbconfig.host[0],
+      user: dbConfig.dbconfig.user[0],
+      password: dbConfig.dbconfig.password[0],
+      database: dbConfig.dbconfig.database[0],
+      port: dbConfig.dbconfig.port[0]
     });
     connection.connect(function(err) {
       if (err) {
         throw err;
       }
-      // console.log("connected to SQL database");
     });
-    // first, get the hashed password to compare to the plaintext pass
-    // bcrypt.compare(/* what are the params? */)
-    // just have 1 pw in the db
-    // all i need to do is compare that to the plaintext password
-    connection.query("SELECT * FROM tbl_accounts" /* WHERE acc_password != ""*/, function(err, results, fields) {
-      // results is an array where each index is 1 row
-      // tbl_accounts only has 1 row: acc_name | acc_login | acc_password
+    // currently just assuming only 1 unique account per username
+    connection.query("SELECT * FROM tbl_accounts WHERE acc_login == 'user'", function(err, results, fields) {
       var hashed_pass = results[0].acc_password;
-      // console.log("hashed pass is: ", hashed_pass);
       var auth = function() {
         return bcrypt.compare(pass, hashed_pass, function(err, result) {
           return result;
         });
       }
-      // console.log("auth: ", auth);
       if (auth) {
-        // console.log("Successfully authenticated, attempting to redirect to contacts");
         loggedin = true;
         res.redirect("/contacts");
       }
@@ -271,22 +235,6 @@ app.post('/authenticate', urlencodedparser, function(req, res) {
 
 //TODO POST new contact entry from addContact form
 app.post('/postContactEntry', urlencodedparser ,function(req, res) {
-  //TODO add implementation
-  // hw5 implementation:
-  // get contacts JSON
-  // parse results from addContact form to a JSON
-  // push addContact JSON onto already existing contacts JSON
-
-  // so how can i do this for hw6 using sql?
-  // results = JSON.parse(JSON.stringify(results));
-  // will use the tbl_contacts to store the results
-  // so, can sql INSERT like how insert_into_accounts does it
-  // how to get results of POST? same as login
-  // the urlencodedparser should handle it so i can access it from req.body.[id]
-
-  // not sure how exactly to get the form data
-  // believe i can just get it based on what input name=[id] is
-  // since that's how i'm doing it in login
   var rowToBeInserted = {
     name: req.body.name,
     category: req.body.category,
@@ -296,26 +244,22 @@ app.post('/postContactEntry', urlencodedparser ,function(req, res) {
     website: req.body.website_name,
     website_url: req.body.website_url
   };
-  // console.log("Created row, attempting to insert it into the database");
-  // console.log(rowToBeInserted);
   var connection = mysql.createConnection({
-    host: dbConfig.dbconfig.host[0],  // "cse-mysql-classes-01.cse.umn.edu",
-    user: dbConfig.dbconfig.user[0],  // "C4131S21U69",
-    password: dbConfig.dbconfig.password[0],  // "4791",
-    database: dbConfig.dbconfig.database[0],  // "C4131S21U69",
-    port: dbConfig.dbconfig.port[0]  // 3306
+    host: dbConfig.dbconfig.host[0],
+    user: dbConfig.dbconfig.user[0],
+    password: dbConfig.dbconfig.password[0],
+    database: dbConfig.dbconfig.database[0],
+    port: dbConfig.dbconfig.port[0]
   });
   connection.connect(function(err) {
     if (err) {
       throw err;
     }
-    // console.log("connected to SQL database");
   });
   connection.query('INSERT tbl_contacts SET ?', rowToBeInserted, function(err, result) {
     if (err) {
       throw err;
     }
-    // console.log("Successfully inserted row into contacts database");
   });
   connection.end();
   res.redirect("/contacts");

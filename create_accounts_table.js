@@ -7,10 +7,10 @@ READ ALL COMMENTS AND REPLACE VALUES ACCORDINGLY
 const mysql = require("mysql");
 
 const dbCon = mysql.createConnection({
-    host: "cse-mysql-classes-01.cse.umn.edu",
-    user: "C4131S21U69",               // replace with the database user provided to you
-    password: "4791",                  // replace with the database password provided to you
-    database: "C4131S21U69",           // replace with the database user provided to you
+    host: "us-cdbr-east-03.cleardb.com",
+    user: "b8af42f1cf57fb",               // replace with the database user provided to you
+    password: "3b4a81e3",                  // replace with the database password provided to you
+    database: "heroku_d350a7734eedf1b",           // replace with the database user provided to you
     port: 3306
 });
 

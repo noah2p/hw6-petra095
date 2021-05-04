@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dbconfig>
-  <host>cse-mysql-classes-01.cse.umn.edu</host>
-  <user>C4131S21U69</user>
-  <password>4791</password>
-  <database>C4131S21U69</database>
+  <host>us-cdbr-east-03.cleardb.com</host>
+  <user>b8af42f1cf57fb</user>
+  <password>3b4a81e3</password>
+  <database>heroku_d350a7734eedf1b</database>
   <port>3306</port>
 </dbconfig>
