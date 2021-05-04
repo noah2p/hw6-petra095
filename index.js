@@ -79,7 +79,7 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 // server listens on port 9002 for incoming connections
-app.listen(port, () => console.log('Listening on port', port));
+app.listen(process.env.PORT || port, () => console.log('Listening on port', port));
 
 app.get('/', function (req, res) {
     // res.send("hello world");
