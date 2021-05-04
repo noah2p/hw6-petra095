@@ -166,8 +166,8 @@ app.get('/logout', function(req, res) {
 app.get('/getContact', function (req,res) {
   var connection = mysql.createConnection({
     host: dbConfig.dbconfig.host[0],
-    user: dbConfig.dbconfig.user[0], 
-    password: dbConfig.dbconfig.password[0], 
+    user: dbConfig.dbconfig.user[0],
+    password: dbConfig.dbconfig.password[0],
     database: dbConfig.dbconfig.database[0],
     port: dbConfig.dbconfig.port[0]
   });
@@ -206,18 +206,27 @@ app.post('/authenticate', urlencodedparser, function(req, res) {
       if (err) {
         throw err;
       }
+      // console.log("Connected to the database");
     });
     // currently just assuming only 1 unique account per username
-    connection.query("SELECT * FROM tbl_accounts WHERE acc_login == 'user'", function(err, results, fields) {
-      var hashed_pass = results[0].acc_password;
-      var auth = function() {
-        return bcrypt.compare(pass, hashed_pass, function(err, result) {
-          return result;
-        });
-      }
-      if (auth) {
-        loggedin = true;
-        res.redirect("/contacts");
+    var sql = 'SELECT * FROM tbl_accounts WHERE acc_login = ' + mysql.escape(user);
+    connection.query(sql, function(err, results, fields) {
+      if (results.length > 0) {
+        var hashed_pass = results[0].acc_password;
+        var auth = function() {
+          return bcrypt.compare(pass, hashed_pass, function(err, result) {
+            return result;
+          });
+        }
+        if (auth) {
+          loggedin = true;
+          res.redirect("/contacts");
+        }
+        else {
+          console.log("Invalid Username or Password");
+          loggedin = false;
+          res.redirect("/login");
+        }
       }
       else {
         console.log("Invalid Username or Password");
