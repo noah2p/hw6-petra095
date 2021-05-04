@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+      .login-form {
+        width: 300px;
+        margin: 0 auto;
+        font-family: sans-serif;
+      }
+      .login-form h1 {
+        text-align: center;
+        font-size: 1.5em;
+        padding: 1em 0 1em 0;
+        color: #4d4d4d;
+      }
+      .login-form input[type="password"],
+      .login-form input[type="text"] {
+        width: 100%;
+        padding: 0.9375em;
+        border: 0.0625em solid #dddddd;
+        box-sizing: border-box;
+        cursor: pointer;
+        font-weight: bold;
+        margin-bottom: 0.9375em;
+      }
+      .login-form input[type="submit"] {
+        width: 100%;
+        padding: 0.9375em;
+        background-color: #535b63;
+        border: 0;
+        box-sizing: border-box;
+        cursor: pointer;
+        font-weight: bold;
+        color: #ffffff;
+      }
+    </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-default">
+    <!-- TODO -->
+    <div class="container-fluid">
+      <ul class="nav navbar-nav">
+        <li><a href="welcome.html"><b>Home</b></a></li>
+        <li><a href="/contacts"><b>Contacts</b></a></li>
+        <li><a href="/addContact"><b>Add Contact</b></a></li>
+        <li><a href="/stock.html"><b>Stock Page</b></a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class = "login-form">
+    <h1> Please Login Here </h1>
+    <form method="POST" action="/authenticate">
+      <input type="text" name="username" placeholder="Username" required/>
+      <input type="password" name="password" placeholder="Password" required/>
+      <input type="submit" value="Login">
+    </form>
+  </div>
+</body>
