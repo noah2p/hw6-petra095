@@ -5,6 +5,7 @@ READ ALL COMMENTS AND REPLACE VALUES ACCORDINGLY
 */
 
 const mysql = require("mysql");
+const bcrypt = require('bcrypt');
 
 const dbCon = mysql.createConnection({
     host: "us-cdbr-east-03.cleardb.com",
@@ -19,25 +20,25 @@ dbCon.connect(function (err) {
     if (err) {
         throw err;
     }
+
     console.log("Connected to database!");
 
-    const sql = `CREATE TABLE tbl_contacts (
-        contact_id   INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        name         VARCHAR(30),
-        category     VARCHAR(40),
-        location     VARCHAR(300),
-        contact_info VARCHAR(200),
-        email        VARCHAR(30),
-        website      VARCHAR(300),
-        website_url  VARCHAR(300)
-    )`;
+    const saltRounds = 10;
+    const myPlaintextPassword = 'admin%'; // replace with password chosen by you OR retain the same value
+    const passwordHash = bcrypt.hashSync(myPlaintextPassword, saltRounds);
 
-    console.log("Attempting to create table: tbl_contacts");
-    dbCon.query(sql, function (err, result) {
+    const rowToBeInserted = {
+        acc_name: 'admin$',            // replace with acc_name chosen by you OR retain the same value
+        acc_login: 'admin$',           // replace with acc_login chosen by you OR retain the same value
+        acc_password: passwordHash
+    };
+
+    console.log("Attempting to insert record into tbl_accounts");
+    dbCon.query('INSERT tbl_accounts SET ?', rowToBeInserted, function (err, result) {
         if (err) {
             throw err;
         }
-        console.log("Table tbl_accounts created");
+        console.log("Table record inserted!");
     });
 
     dbCon.end();
